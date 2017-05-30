@@ -2,10 +2,12 @@
 
 ### Is Azure Batch the right tool for your compute job?
 
+1. Does your compute job take longer than you want to wait, or do you want to do more in less time?
+2. Can you divide your job into many similar but independent tasks?
+
+If the answer to these two questions is yes, read on!
 The Azure Batch service is a very accessible way to scale out by parallelizing any application to virtual machines (VMs) in the cloud. 
-Here we describe how to unlock this potential through a stand-alone solution that does not require any programming. It allows the user 
-to plug in their own software by simply updating a configuration file. Compute jobs that would last several days can be reduced to an 
-hour by deploying a pool of virtual machines in the cloud and running the task collection in parallel, distributed over these machines.
+Here we describe how to unlock this potential through a stand-alone solution that you can start using without the need for programming. It allows the user to plug in their own software by simply updating a configuration file. Compute jobs that would last several days can be reduced to an hour by deploying a pool of virtual machines in the cloud and running the task collection in parallel, distributed over these machines.
 
 ### Introduction
 
