@@ -22,7 +22,11 @@ handles the division of your tasks over these nodes. When a node has finished a 
 that node. If an error occurs on any node, the interrupted task is resumed on another node. This way, Azure Batch makes sure that 
 your pool is used as efficiently and robustly possible.
 
+
+![alt text](https://github.com/rubeneric/Batch_Client_Template/blob/master/images/batch_overview.png "Azure Batch schematic")
+
 *Figure 1: Schematic functioning of Azure Batch. The batch pool and job are being defined and deployed from the user's personal computer.*
+
 
 The number of noes in your pool, and the size of the nodes (i.e. the technical specifications of the VMs that are deployed by Batch), 
 are for you to decide. A larger pool gets the job done faster, but may result in a larger number of added compute hours due to the 
@@ -39,8 +43,12 @@ in a series of small-scale trial runs. More tips and tricks are presented in the
 1.	Setup your Azure services.  If you don’t already have one, you will need to set up an Azure subscription. Within that subscription, create an Azure Batch Service with a linked storage account.
 2.	Download the Batch client template 
 3.	Setup the configuration file. The “app.config” file found in the template folder contains the basic information needed to setup your job. Figure 2 shows which parameters need to be set. We will walk you through them here.
- 
+
+
+![alt text](https://github.com/rubeneric/Batch_Client_Template/blob/master/images/Config.png "Config file")
+
 *Figure 2: the contents of the “AzureBatchTemplate.exe.config” configuration file that need to be set up.*
+
 
 *	The first five parameters refer to the account properties of your Azure Batch and Storage account
 *	The PoolID and JobID can be chosen at will to uniquely identify your pool and job, respectively
