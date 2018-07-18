@@ -1,6 +1,6 @@
 # The Azure Batch client template
 
-### When to use Azure Batch for your compute job?
+### When to use Azure Batch for your compute job
 
 1. Does your compute job take longer than you want to wait, or do you want to do more in less time?
 2. Can you divide your job into many similar but independent tasks?
