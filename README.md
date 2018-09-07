@@ -23,7 +23,7 @@ that node. If an error occurs on any node, the interrupted task is resumed on an
 your pool is used as efficiently and robustly possible.
 
 
-![alt text](https://niceness.visualstudio.com/67b1db77-7006-47fd-bd64-2e8863be504e/_apis/git/repositories/8eeac1b3-4b54-4e01-b389-ac252d00ded7/Items?path=%2Fimages%2Fbatch_overview.png&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&download=false&resolveLfs=true&%24format=octetStream&api-version=5.0-preview.1 "Azure Batch schematic")
+![alt text](https://github.com/rubeneric/Batch_Client_Template/blob/master/images/batch_overview.png "Azure Batch schematic")
 
 *Figure 1: Schematic functioning of Azure Batch. The batch pool and job are being defined and deployed from the user's personal computer.*
 
@@ -56,7 +56,7 @@ Further sources that this client is based on:
 4. Upload all input files to the input container. The output container stays empty: this is where your output files will be uploaded from each node.
 5.	Download the Azure Batch Client files from this repository.
 
-![alt text](https://niceness.visualstudio.com/67b1db77-7006-47fd-bd64-2e8863be504e/_apis/git/repositories/8eeac1b3-4b54-4e01-b389-ac252d00ded7/Items?path=%2Fimages%2Fapp.config.png&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&download=false&resolveLfs=true&%24format=octetStream&api-version=5.0-preview.1 "Config file")
+![alt text](https://github.com/rubeneric/Batch_Client_Template/blob/master/images/app.config%20(1).png "Config file")
 
 *Figure 2: the contents of the “App.config” configuration file that need to be set up.*
 
