@@ -5,9 +5,9 @@
 1. Does your compute job take longer than you want to wait, or do you want to do more in less time?
 2. Can you divide your job into many similar but independent tasks?
 
-If the answer to these two questions is yes, then you are in luck.
+If the answer to these two questions is yes, then you may be in luck.
 The Azure Batch service is a very accessible way to scale out by parallelizing any application to virtual machines (VMs) in the cloud. 
-Here we describe how to unlock this potential through a stand-alone solution that you can start using without the need for programming. It allows the user to plug in their own software by simply updating a configuration file. Compute jobs that would last several days can be reduced to an hour by deploying a pool of virtual machines in the cloud and running the task collection in parallel, distributed over these machines.
+Using this cient, it allows the user to plug in their own software by simply updating a configuration file.
 
 ### Introduction
 
@@ -23,12 +23,12 @@ that node. If an error occurs on any node, the interrupted task is resumed on an
 your pool is used as efficiently and robustly possible.
 
 
-![alt text](https://github.com/rubeneric/Batch_Client_Template/blob/master/images/batch_overview.png "Azure Batch schematic")
+![alt text](https://niceness.visualstudio.com/67b1db77-7006-47fd-bd64-2e8863be504e/_apis/git/repositories/8eeac1b3-4b54-4e01-b389-ac252d00ded7/Items?path=%2Fimages%2Fbatch_overview.png&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&download=false&resolveLfs=true&%24format=octetStream&api-version=5.0-preview.1 "Azure Batch schematic")
 
 *Figure 1: Schematic functioning of Azure Batch. The batch pool and job are being defined and deployed from the user's personal computer.*
 
 
-The number of noes in your pool, and the size of the nodes (i.e. the technical specifications of the VMs that are deployed by Batch), 
+The number of nodes in your pool, and the size of the nodes (i.e. the technical specifications of the VMs that are deployed by Batch), 
 are for you to decide. A larger pool gets the job done faster, but may result in a larger number of added compute hours due to the 
 overhead time of deploying and decommissioning your nodes. Since you pay per VM, per minute from the time you start your deployment, 
 a smaller pool may therefore be cheaper. 
@@ -38,27 +38,41 @@ parallelization on a single machine. In other cases, going with a large number o
 configuration suits the job can typically be estimated from your experience with the application, and when necessary, further optimized 
 in a series of small-scale trial runs. More tips and tricks are presented in the section “Optimization and Cost Management” below.
 
+Further sources that this client is based on: 
+* The Azure Batch samples at https://github.com/Azure/azure-batch-samples/tree/master/CSharp
+* The Azure Batch tutorial at https://github.com/Azure-Samples/batch-dotnet-ffmpeg-tutorial
+* The documentation at the Azure Batch .NET namespace https://docs.microsoft.com/en-us/dotnet/api/microsoft.azure.batch?view=azure-dotnet
+
+
 ### Getting started
 
-1.	Setup your Azure services.  If you don’t already have one, you will need to set up an Azure subscription. Within that subscription, create an Azure Batch Service with a linked storage account.
-2.	Download the Batch client template 
-3.	Setup the configuration file. The “app.config” file found in the template folder contains the basic information needed to setup your job. Figure 2 shows which parameters need to be set. We will walk you through them here.
+1.	Setup your Azure services.  If you don’t already have one, you will need to set up an Azure subscription. Within that subscription, create an Azure Batch Service and an Azure Storage account.
+    * Create Batch account: https://docs.microsoft.com/en-us/azure/batch/batch-account-create-portal
+    * Create Storage account: https://docs.microsoft.com/en-us/azure/storage/common/storage-quickstart-create-account?tabs=portal
+    * Optional but recommended - download Azure Storage Explorer: https://azure.microsoft.com/en-us/features/storage-explorer/
+    * Optional but recommended - downoad Azure Batch Exmplorer: https://blogs.technet.microsoft.com/windowshpc/2015/01/20/azure-batch-explorer-sample-walkthrough/
+2.  Create three containers in your Blob Storage account, named 'application', 'input' and 'output'. 
+3. Upload your application files (installers, packages etc) to your application folder. Then create a file named *starttask.cmd* that will be run by Azure Batch each time a node is started up for the first time. This file should contain a batch script that installs everything needed to run tasks on the node. Similarly, create a file named *task.cmd* that contains the script to run each task. You can find an example of these files, along with the *UploadToBlob.exe*, in the 'application' folder in the solution. Upload these two .cmd files and the .exe file to the application folder.
+4. Upload all input files to the input container. The output container stays empty: this is where your output files will be uploaded from each node.
+5.	Download the Azure Batch Client files from this repository.
 
+![alt text](https://niceness.visualstudio.com/67b1db77-7006-47fd-bd64-2e8863be504e/_apis/git/repositories/8eeac1b3-4b54-4e01-b389-ac252d00ded7/Items?path=%2Fimages%2Fapp.config.png&versionDescriptor%5BversionOptions%5D=0&versionDescriptor%5BversionType%5D=0&versionDescriptor%5Bversion%5D=master&download=false&resolveLfs=true&%24format=octetStream&api-version=5.0-preview.1 "Config file")
 
-![alt text](https://github.com/rubeneric/Batch_Client_Template/blob/master/images/Config.png "Config file")
+*Figure 2: the contents of the “App.config” configuration file that need to be set up.*
 
-*Figure 2: the contents of the “AzureBatchTemplate.exe.config” configuration file that need to be set up.*
+6.	Setup the configuration file. The “app.config” file found in the template folder contains the basic information needed to setup your job. Figure 2 shows which parameters need to be set. We will walk you through them here.
+    *	The first five parameters refer to the account properties of your Azure Batch and Storage account
+    *	The *PoolID* and *JobID* can be chosen at will to uniquely identify your pool and job, respectively
+    *	*FilesPerTask* defines of how many input files a task consists. This number can be chosen to be one, but consider trying to find the right balance between reducing overhead (by not having to restart your application for every single input file), and having a small task size to distribute them evenly over the nodes
+    *	The *PoolSizeDedicated* is the number of dedicated nodes Batch will deploy
+    *	The *PoolSizeLowPriority* is the number of low priority nodes Batch will deploy. 
+        * Documentation: https://docs.microsoft.com/en-us/azure/batch/batch-low-pri-vms
+        * Pricing: https://azure.microsoft.com/en-us/pricing/details/batch/
+    *	The *NodeSize* is code (id) defining the technical specifications of each node. For an overview of the available options with ids, see https://docs.microsoft.com/en-us/azure/cloud-services/cloud-services-sizes-specs
+    *	The *TimeOutLimit* sets a limit in minutes after which time your job is terminated, to prevent it from running indefinitely if it does not finish successfully
+7. Run the client, either by building the solution or running the code in debug mode. The client will run locally and monitor the job - make sure the computer that runs the client doesn't shut down or go into sleep mode, or the job will be disrupted.
+8. IMPORTANT: After the client has finished running (either after completing the job successfully, or after an errors or interruption), make sure to check that your pool is properly shut down by going to the Azure portal https://ms.portal.azure.com/, checking your Batch Account -> Pools -> Delete. A pool can remain active even after the job is completed, and you will be charged by the minute for this time. The next section explains in more detail how to limit costs.
 
-
-*	The first five parameters refer to the account properties of your Azure Batch and Storage account
-*	The PoolID and JobID can be chosen at will to uniquely identify your pool and job, respectively
-*	The applicationDirectory refers to the local folder that contains the application files, i.e. the files that are copied to every node upon startup since they are needed for each and every task
-*	The inputDirectory refers to the local folder that contains the input files, i.e. the files that are needed to to run each specific task
-*	The outputDirectory refers to the local folder where the output from each task will be downloaded to
-*	The TaskNumber is the number of tasks that your job consists of
-*	The PoolSize is the number of nodes Batch will deploy
-*	The NodeSize is code (id) defining the technical specifications of each node. See Sizes for Cloud Services for an overview of the available options with ids
-*	The TimeOutLimit sets a limit in minutes after which time your job is terminated to prevent it from running indefinitely if it does not finish successfully
 
 ### Optimization and cost management
 
@@ -73,7 +87,7 @@ Once you have a good understanding of how your application performs on the chose
 4.	__Monitor your job at set time points__.
 While the Azure Batch service is very robust in its distribution and backing up of tasks, mistakes are easily made when setting up your Batch job. It is therefore advisable to closely monitor the first stages of the job where the pool is deployed and the first tasks initiated. Batch Explorer is a good tool for doing so. This minimizes the impact of any errors.
 5.	__Check if your pool is correctly decommissioned after job completion.__
-Even if all tasks are performed and your job is completed with the desired output, a pool may remain active if not properly decommissioned. The Batch template presented here does this automatically upon job completion, but always check and confirm that the pool was successfully removed.
+Even if all tasks are performed and your job is completed with the desired output, a pool may remain active if not properly decommissioned. The Batch template presented here does this automatically upon job completion, but always check and confirm that the pool was successfully removed or you risk being charged for unnecessary running time.
 
 
 
